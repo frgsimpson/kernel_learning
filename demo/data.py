@@ -171,8 +171,9 @@ def load_airline_data(n_samples: int)-> Tuple[np.ndarray, np.ndarray]:
     airline passengers, in thousands. Each element corresponds to one
     month, and it goes from Jan. 1949 through Dec. 1960."""
 
-    values = np.loadtxt(AIRLINE_DATAFILE).flatten()
-    return np.arange(values.size).astype(float)[0:n_samples], values.astype(float)[0:n_samples]
+    y_values = np.loadtxt(AIRLINE_DATAFILE).flatten().astype(float)[0:n_samples]
+    x_values = 1949 + 1/12 * np.arange(y_values.size).astype(float)
+    return x_values, y_values
 
 
 def load_maunaloa_data(n_samples: int, load_interpolated_data: bool=True)-> Tuple[np.ndarray, np.ndarray]:

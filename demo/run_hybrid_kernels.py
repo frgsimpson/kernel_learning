@@ -6,12 +6,13 @@
 import numpy as np
 import gpflow as gf
 
-from kernel_learning.data import load_data, plot_model_performance, median_distance_local, DEFAULT_RANDOM_SEED
+from demo.data import load_data, plot_model_performance, median_distance_local, DEFAULT_RANDOM_SEED
 from kernel_learning.hybrid_kernel import HybridKernel
 from kernel_learning.primitive_kernels import load_default_basis_kernels
 from kernel_learning.utils import PrintAction, run_adam
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 plt.style.use('ggplot')
 
 DATA_TYPE = 'airline'  # mauna, random, airline, sinusoid
@@ -19,7 +20,7 @@ NORMALISE_DATA = True
 PREDICT_EXTRAPOLATION = True
 N_NETWORK_LAYERS = 3  # Default 3
 LEARNING_RATE = 1e-2  # Default 1e-3
-ITERATIONS = 3000000  # Default 200000, runs in 20 seconds
+ITERATIONS = 2000000  # Default 2000000, runs in 20 seconds
 N_DATA_SAMPLES = 128
 EXTRAPOLATION_FRACTION = 1.0  # How far to extrapolate relative to original data
 
@@ -63,15 +64,17 @@ x_raw_test = x_predict * x_raw.std() + x_raw.mean()
 # Visualise
 plot_model_performance(x_raw_extended, y_raw_extended, x_raw_test, mean, var)
 
-xmin = x_raw_test.min() - 0.1
-xmax = x_raw_test.max()
-ymin = y_raw_extended.min() - 3
-ymax = y_raw_extended.max() + 3
+fig = plt.gcf()
 
 if DATA_TYPE == 'airline':
-    plt.xlim(left=0)
+    plt.xlabel('Year')
+    plt.ylabel('Airline Passengers')
     plt.ylim(bottom=0)
-    fig = plt.gcf()
+    plt.xlim(left=x_raw_test[0], right=x_raw_test[-1])
+
+    ax = plt.gca()
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     fig.set_size_inches(14, 6)
 
 plt.show()
